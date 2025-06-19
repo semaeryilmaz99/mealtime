@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const LeftSidebar = () => {
   const [activeItem, setActiveItem] = useState('breakfast');
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const menuItems = [
     {
@@ -42,33 +43,98 @@ const LeftSidebar = () => {
     }
   ];
 
+  const toggleMobile = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   return (
-    <div className="fixed left-0 top-16 h-full w-64 bg-white shadow-lg border-r border-gray-200 z-40">
-      <div className="p-4">
-        <h2 className="text-lg font-semibold text-gray-800 mb-6 px-2">Meal Categories</h2>
-        
-        <nav className="space-y-2">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveItem(item.id)}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
-                activeItem === item.id
-                  ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm'
-                  : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-              }`}
-            >
-              <div className={`transition-colors duration-200 ${
-                activeItem === item.id ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'
-              }`}>
-                {item.icon}
-              </div>
-              <span className="font-medium">{item.name}</span>
-            </button>
-          ))}
-        </nav>
+    <>
+      {/* Desktop Sidebar */}
+      <div className="fixed left-0 top-16 h-full w-64 bg-white shadow-lg border-r border-gray-200 z-40 hidden md:block">
+        <div className="p-4">
+          <h2 className="text-lg font-semibold text-gray-800 mb-6 px-2">Meal Categories</h2>
+          
+          <nav className="space-y-2">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveItem(item.id)}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
+                  activeItem === item.id
+                    ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm'
+                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+              >
+                <div className={`transition-colors duration-200 ${
+                  activeItem === item.id ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'
+                }`}>
+                  {item.icon}
+                </div>
+                <span className="font-medium">{item.name}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
       </div>
-    </div>
+
+      {/* Mobile Sidebar */}
+      <div className={`mobile-left-sidebar ${mobileOpen ? 'open' : ''}`}>
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-semibold text-gray-800">Meal Categories</h2>
+            <button
+              onClick={toggleMobile}
+              className="p-2 text-gray-500 hover:text-gray-700 transition-colors duration-200"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <nav className="space-y-2">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveItem(item.id);
+                  setMobileOpen(false);
+                }}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
+                  activeItem === item.id
+                    ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm'
+                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+              >
+                <div className={`transition-colors duration-200 ${
+                  activeItem === item.id ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'
+                }`}>
+                  {item.icon}
+                </div>
+                <span className="font-medium">{item.name}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      {/* Mobile Toggle Button */}
+      <button
+        onClick={toggleMobile}
+        className="mobile-toggle-left md:hidden"
+        aria-label="Toggle meal categories"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Mobile Overlay */}
+      <div
+        className={`mobile-overlay ${mobileOpen ? 'open' : ''}`}
+        onClick={toggleMobile}
+      ></div>
+    </>
   );
 };
 

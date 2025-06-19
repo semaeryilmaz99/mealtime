@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 const RightSidebar = () => {
   const [selectedDiet, setSelectedDiet] = useState(null)
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   const dietaryOptions = [
     { id: 'vegetarian', label: 'Vegetarian', icon: '🥬' },
@@ -13,29 +14,90 @@ const RightSidebar = () => {
     setSelectedDiet(selectedDiet === dietId ? null : dietId)
   }
 
+  const toggleMobile = () => {
+    setMobileOpen(!mobileOpen)
+  }
+
   return (
-    <div className="right-sidebar">
-      <div className="sidebar-content">
-        <div className="dietary-section">
-          <h3 className="section-header">Dietary</h3>
-          <div className="dietary-options">
-            {dietaryOptions.map((option) => (
-              <div
-                key={option.id}
-                className={`dietary-option ${selectedDiet === option.id ? 'selected' : ''}`}
-                onClick={() => handleDietClick(option.id)}
-              >
-                <span className="option-icon">{option.icon}</span>
-                <span className="option-label">{option.label}</span>
-                <div className="option-indicator">
-                  <div className="indicator-dot"></div>
+    <>
+      {/* Desktop Sidebar */}
+      <div className="right-sidebar hidden md:block">
+        <div className="sidebar-content">
+          <div className="dietary-section">
+            <h3 className="section-header">Dietary</h3>
+            <div className="dietary-options">
+              {dietaryOptions.map((option) => (
+                <div
+                  key={option.id}
+                  className={`dietary-option ${selectedDiet === option.id ? 'selected' : ''}`}
+                  onClick={() => handleDietClick(option.id)}
+                >
+                  <span className="option-icon">{option.icon}</span>
+                  <span className="option-label">{option.label}</span>
+                  <div className="option-indicator">
+                    <div className="indicator-dot"></div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Mobile Sidebar */}
+      <div className={`mobile-right-sidebar ${mobileOpen ? 'open' : ''}`}>
+        <div className="sidebar-content">
+          <div className="dietary-section">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="section-header">Dietary</h3>
+              <button
+                onClick={toggleMobile}
+                className="p-2 text-white hover:text-gray-200 transition-colors duration-200"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="dietary-options">
+              {dietaryOptions.map((option) => (
+                <div
+                  key={option.id}
+                  className={`dietary-option ${selectedDiet === option.id ? 'selected' : ''}`}
+                  onClick={() => {
+                    handleDietClick(option.id)
+                    setMobileOpen(false)
+                  }}
+                >
+                  <span className="option-icon">{option.icon}</span>
+                  <span className="option-label">{option.label}</span>
+                  <div className="option-indicator">
+                    <div className="indicator-dot"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Toggle Button */}
+      <button
+        onClick={toggleMobile}
+        className="mobile-toggle-right md:hidden"
+        aria-label="Toggle dietary options"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+        </svg>
+      </button>
+
+      {/* Mobile Overlay */}
+      <div
+        className={`mobile-overlay ${mobileOpen ? 'open' : ''}`}
+        onClick={toggleMobile}
+      ></div>
+    </>
   )
 }
 
