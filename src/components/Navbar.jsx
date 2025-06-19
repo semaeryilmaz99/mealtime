@@ -32,7 +32,11 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-gray-900">MealTime</h1>
+              <img
+                src="/logo.png"
+                alt="MealTime Logo"
+                className="h-8 w-auto"
+              />
             </div>
           </div>
 
