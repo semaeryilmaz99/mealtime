@@ -1,1 +1,187 @@
 @import "tailwindcss";
+
+/* Right Sidebar Styles */
+.right-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-content {
+  padding: 2rem 1.5rem;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.dietary-section {
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+}
+
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 3rem;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 1px;
+}
+
+.dietary-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dietary-option {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.dietary-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.dietary-option:hover::before {
+  left: 100%;
+}
+
+.dietary-option:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(-4px);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.dietary-option.selected {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.option-icon {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.dietary-option:hover .option-icon {
+  transform: scale(1.1);
+}
+
+.option-label {
+  color: white;
+  font-weight: 500;
+  font-size: 0.95rem;
+  flex: 1;
+  transition: color 0.3s ease;
+}
+
+.dietary-option:hover .option-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.option-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  transition: all 0.3s ease;
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.dietary-option.selected .indicator-dot {
+  background: #4ade80;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+  transform: scale(1.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .right-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    transform: translateX(100%);
+  }
+  
+  .right-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .sidebar-content {
+    padding: 1.5rem 1rem;
+  }
+  
+  .dietary-option {
+    padding: 0.875rem 1rem;
+  }
+  
+  .option-icon {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .right-sidebar {
+    width: 100%;
+  }
+  
+  .sidebar-content {
+    padding: 1rem 0.75rem;
+  }
+  
+  .dietary-option {
+    padding: 0.75rem 0.875rem;
+  }
+  
+  .option-icon {
+    font-size: 1.125rem;
+    margin-right: 0.625rem;
+  }
+  
+  .option-label {
+    font-size: 0.875rem;
+  }
+}
