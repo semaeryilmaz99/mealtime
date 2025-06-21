@@ -522,17 +522,27 @@
   box-shadow: 0 10px 20px rgba(30, 64, 175, 0.25), 0 6px 6px rgba(30, 64, 175, 0.2);
 }
 
+.bouncing-container {
+  animation: bounce-subtle 1.5s ease-in-out infinite;
+  box-shadow: 0 10px 20px rgba(30, 64, 175, 0.25), 0 6px 6px rgba(30, 64, 175, 0.2);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: white;
+}
+
+.info-card {
+  animation: bounce-subtle 1.5s ease-in-out infinite;
+  box-shadow: 0 10px 20px rgba(30, 64, 175, 0.25), 0 6px 6px rgba(30, 64, 175, 0.2);
+}
+
+.info-card:nth-of-type(2) {
+  animation-delay: 0.15s;
+}
+
+.info-card:nth-of-type(3) {
+  animation-delay: 0.3s;
+}
+
 @media (max-width: 768px) {
-  .info-card {
-    animation: bounce-subtle 1.5s ease-in-out infinite;
-    box-shadow: 0 10px 20px rgba(30, 64, 175, 0.25), 0 6px 6px rgba(30, 64, 175, 0.2);
-  }
-
-  .info-card:nth-of-type(2) {
-    animation-delay: 0.15s;
-  }
-
-  .info-card:nth-of-type(3) {
-    animation-delay: 0.3s;
-  }
+  /* .info-card styles moved outside for all screen sizes */
 }
