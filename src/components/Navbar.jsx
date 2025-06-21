@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -32,23 +33,31 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <img
-                src="/logo.png"
-                alt="MealTime Logo"
-                className="h-8 w-auto"
-              />
+              <NavLink to="/">
+                <img
+                  src="/logo.png"
+                  alt="MealTime Logo"
+                  className="h-8 w-auto"
+                />
+              </NavLink>
             </div>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+              <NavLink to="/" className={({ isActive }) =>
+                  "px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 " +
+                  (isActive ? "text-blue-600" : "text-gray-700 hover:text-blue-600")
+                }>
                 Dashboard
-              </a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+              </NavLink>
+              <NavLink to="/recipes" className={({ isActive }) =>
+                  "px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 " +
+                  (isActive ? "text-blue-600" : "text-gray-700 hover:text-blue-600")
+                }>
                 Recipes
-              </a>
+              </NavLink>
               <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                 Shopping List
               </a>
@@ -99,22 +108,28 @@ const Navbar = () => {
       {/* Mobile menu */}
       <div className={`mobile-menu md:hidden ${mobileMenuOpen ? 'open' : 'closed'}`}>
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <a 
-            href="#" 
-            className="mobile-menu-item text-gray-700 hover:text-blue-600 block px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 hover:bg-blue-50"
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              "mobile-menu-item block px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 " +
+              (isActive ? "text-blue-600 bg-blue-50" : "text-gray-700 hover:text-blue-600 hover:bg-blue-50")
+            }
             onClick={() => setMobileMenuOpen(false)}
           >
             Dashboard
-          </a>
-          <a 
-            href="#" 
-            className="mobile-menu-item text-gray-700 hover:text-blue-600 block px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 hover:bg-blue-50"
+          </NavLink>
+          <NavLink
+            to="/recipes"
+            className={({ isActive }) =>
+              "mobile-menu-item block px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 " +
+              (isActive ? "text-blue-600 bg-blue-50" : "text-gray-700 hover:text-blue-600 hover:bg-blue-50")
+            }
             onClick={() => setMobileMenuOpen(false)}
           >
             Recipes
-          </a>
-          <a 
-            href="#" 
+          </NavLink>
+          <a
+            href="#"
             className="mobile-menu-item text-gray-700 hover:text-blue-600 block px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 hover:bg-blue-50"
             onClick={() => setMobileMenuOpen(false)}
           >
