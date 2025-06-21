@@ -16,15 +16,15 @@ const App = () => {
               Discover delicious recipes and plan your meals with ease.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-md bounce-on-hover cursor-pointer transition-shadow duration-300 ease-out">
+              <div className="info-card bg-white p-6 rounded-lg shadow-md bounce-on-hover cursor-pointer transition-shadow duration-300 ease-out">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Quick Start</h3>
                 <p className="text-gray-600">Browse meal categories and find your next favorite recipe.</p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md bounce-on-hover cursor-pointer transition-shadow duration-300 ease-out">
+              <div className="info-card bg-white p-6 rounded-lg shadow-md bounce-on-hover cursor-pointer transition-shadow duration-300 ease-out">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Dietary Preferences</h3>
                 <p className="text-gray-600">Filter recipes based on your dietary needs and preferences.</p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md bounce-on-hover cursor-pointer transition-shadow duration-300 ease-out">
+              <div className="info-card bg-white p-6 rounded-lg shadow-md bounce-on-hover cursor-pointer transition-shadow duration-300 ease-out">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Meal Planning</h3>
                 <p className="text-gray-600">Create personalized meal plans for the week or month.</p>
               </div>
