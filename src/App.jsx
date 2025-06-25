@@ -5,8 +5,9 @@ import RightSidebar from './components/RightSidebar'
 import { Outlet } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import ScrollToTopButton from './components/ScrollToTopButton'
+import { ModalProvider } from './context/ModalContext'
 
-const App = () => {
+const AppContent = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <ScrollToTop />
@@ -22,6 +23,14 @@ const App = () => {
       </div>
       <ScrollToTopButton />
     </div>
+  )
+}
+
+const App = () => {
+  return (
+    <ModalProvider>
+      <AppContent />
+    </ModalProvider>
   )
 }
 

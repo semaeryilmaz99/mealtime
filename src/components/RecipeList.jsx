@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import RecipeCard from './RecipeCard';
+import RecipeModal from './RecipeModal';
+import { useModal } from '../context/ModalContext';
 
 const recipes = [
   {
@@ -59,14 +61,33 @@ const recipes = [
 ];
 
 const RecipeList = ({ showTitle = true }) => {
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const { isModalOpen, openModal, closeModal } = useModal();
+
+  const handleRecipeClick = (recipe) => {
+    setSelectedRecipe(recipe);
+    openModal();
+  };
+
+  const handleCloseModal = () => {
+    closeModal();
+    setSelectedRecipe(null);
+  };
+
   return (
     <div className="mt-8">
       {showTitle && <h2 className="text-2xl font-bold text-gray-900 mb-6">Popular Recipes</h2>}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {recipes.map((recipe, index) => (
-          <RecipeCard key={index} recipe={recipe} />
+          <RecipeCard key={index} recipe={recipe} onClick={handleRecipeClick} />
         ))}
       </div>
+      
+      <RecipeModal 
+        recipe={selectedRecipe}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };

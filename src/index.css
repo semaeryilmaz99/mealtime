@@ -10,6 +10,7 @@
   border-radius: 0 0 24px 24px;
   margin: 0 12px;
   width: calc(100% - 24px);
+  z-index: 999; /* Ensure mobile menu stays on top */
 }
 
 .mobile-menu.open {
@@ -206,6 +207,7 @@
     border-radius: 0 0 24px 24px;
     margin: 0 12px;
     width: calc(100% - 24px);
+    z-index: 999 !important; /* Ensure navbar stays on top on mobile */
   }
   
   /* Mobile Left Sidebar */
