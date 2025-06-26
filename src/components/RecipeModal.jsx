@@ -1,6 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useShoppingList } from '../context/ShoppingListContext';
 
 const RecipeModal = ({ recipe, isOpen, onClose }) => {
+  const { addToShoppingList, removeFromShoppingList, shoppingList } = useShoppingList();
+  const [checkedIngredients, setCheckedIngredients] = useState(new Set());
+
+  // Helper to check if an ingredient is in the shopping list and not bought
+  const isIngredientInShoppingListAndNotBought = (ingredient) =>
+    shoppingList.some(item => item.name === ingredient && item.recipe === recipe.title && !item.checked);
+
+  // Helper to get the shopping list item id for a given ingredient
+  const getShoppingListItemId = (ingredient) => {
+    const found = shoppingList.find(item => item.name === ingredient && item.recipe === recipe.title);
+    return found ? found.id : null;
+  };
+
   useEffect(() => {
     const handleEscape = (event) => {
       if (event.key === 'Escape') {
@@ -24,6 +38,40 @@ const RecipeModal = ({ recipe, isOpen, onClose }) => {
       }
     };
   }, [isOpen, onClose]);
+
+  // Sync checked ingredients with shopping list when modal opens or shopping list changes
+  useEffect(() => {
+    if (isOpen && recipe) {
+      const checked = new Set();
+      const details = recipeDetails[recipe.title] || { ingredients: [] };
+      details.ingredients.forEach((ingredient, idx) => {
+        if (isIngredientInShoppingListAndNotBought(ingredient)) {
+          checked.add(idx);
+        }
+      });
+      setCheckedIngredients(checked);
+    }
+  }, [isOpen, recipe, shoppingList]);
+
+  const handleIngredientCheck = (ingredient, index) => {
+    const newCheckedIngredients = new Set(checkedIngredients);
+    
+    if (newCheckedIngredients.has(index)) {
+      newCheckedIngredients.delete(index);
+      // Remove from shopping list when unchecked
+      const id = getShoppingListItemId(ingredient);
+      if (id) removeFromShoppingList(id);
+    } else {
+      newCheckedIngredients.add(index);
+      // Add to shopping list when checked
+      addToShoppingList({
+        name: ingredient,
+        recipe: recipe.title
+      });
+    }
+    
+    setCheckedIngredients(newCheckedIngredients);
+  };
 
   if (!isOpen || !recipe) return null;
 
@@ -283,12 +331,27 @@ const RecipeModal = ({ recipe, isOpen, onClose }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Ingredients
+                <span className="text-sm font-normal text-gray-500 ml-2">
+                  (Check to add to shopping list)
+                </span>
               </h3>
               <ul className="space-y-3">
                 {details.ingredients.map((ingredient, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span className="text-gray-700 leading-relaxed">{ingredient}</span>
+                  <li key={index} className="flex items-start gap-3 group">
+                    <input
+                      type="checkbox"
+                      checked={checkedIngredients.has(index)}
+                      onChange={() => handleIngredientCheck(ingredient, index)}
+                      className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2 mt-1 flex-shrink-0"
+                    />
+                    <span className={`text-gray-700 leading-relaxed ${checkedIngredients.has(index) ? 'line-through text-gray-500' : ''}`}>
+                      {ingredient}
+                    </span>
+                    {checkedIngredients.has(index) && (
+                      <span className="text-xs text-green-600 font-medium ml-2">
+                        ✓ Added to shopping list
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>

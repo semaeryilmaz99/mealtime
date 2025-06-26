@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import ScrollToTopButton from './components/ScrollToTopButton'
 import { ModalProvider } from './context/ModalContext'
+import { ShoppingListProvider } from './context/ShoppingListContext'
 
 const AppContent = () => {
   return (
@@ -28,9 +29,11 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <ModalProvider>
-      <AppContent />
-    </ModalProvider>
+    <ShoppingListProvider>
+      <ModalProvider>
+        <AppContent />
+      </ModalProvider>
+    </ShoppingListProvider>
   )
 }
 

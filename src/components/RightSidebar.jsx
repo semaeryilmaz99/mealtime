@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import ShoppingList from './ShoppingList'
 
 const RightSidebar = () => {
   const [selectedDiet, setSelectedDiet] = useState(null)
@@ -23,6 +24,11 @@ const RightSidebar = () => {
       {/* Desktop Sidebar */}
       <div className="right-sidebar hidden md:block">
         <div className="sidebar-content">
+          {/* Shopping List Section */}
+          <div className="mb-8">
+            <ShoppingList />
+          </div>
+          
           <div className="dietary-section">
             <h3 className="section-header">Dietary</h3>
             <div className="dietary-options">
@@ -47,6 +53,11 @@ const RightSidebar = () => {
       {/* Mobile Sidebar */}
       <div className={`mobile-right-sidebar ${mobileOpen ? 'open' : ''}`}>
         <div className="sidebar-content">
+          {/* Shopping List Section */}
+          <div className="mb-8">
+            <ShoppingList />
+          </div>
+          
           <div className="dietary-section">
             <div className="flex items-center justify-between mb-6">
               <h3 className="section-header">Dietary</h3>
