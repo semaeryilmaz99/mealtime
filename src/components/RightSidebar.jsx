@@ -52,6 +52,17 @@ const RightSidebar = () => {
 
       {/* Mobile Sidebar */}
       <div className={`mobile-right-sidebar ${mobileOpen ? 'open' : ''}`}>
+        {/* Close Button - Top Right Corner */}
+        <button
+          onClick={toggleMobile}
+          className="absolute top-4 right-4 p-2 text-white hover:text-gray-200 transition-colors duration-200 z-10"
+          aria-label="Close sidebar"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        
         <div className="sidebar-content">
           {/* Shopping List Section */}
           <div className="mb-8">
@@ -59,17 +70,7 @@ const RightSidebar = () => {
           </div>
           
           <div className="dietary-section">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="section-header">Dietary</h3>
-              <button
-                onClick={toggleMobile}
-                className="p-2 text-white hover:text-gray-200 transition-colors duration-200"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+            <h3 className="section-header">Dietary</h3>
             <div className="dietary-options">
               {dietaryOptions.map((option) => (
                 <div
