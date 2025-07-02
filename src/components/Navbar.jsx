@@ -58,9 +58,12 @@ const Navbar = () => {
                 }>
                 Recipes
               </NavLink>
-              <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+              <NavLink to="/shopping-list" className={({ isActive }) =>
+                  "px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 " +
+                  (isActive ? "text-blue-600" : "text-gray-700 hover:text-blue-600")
+                }>
                 Shopping List
-              </a>
+              </NavLink>
               <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                 Favorites
               </a>
@@ -128,13 +131,16 @@ const Navbar = () => {
           >
             Recipes
           </NavLink>
-          <a
-            href="#"
-            className="mobile-menu-item text-gray-700 hover:text-blue-600 block px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 hover:bg-blue-50"
+          <NavLink
+            to="/shopping-list"
+            className={({ isActive }) =>
+              "mobile-menu-item block px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 " +
+              (isActive ? "text-blue-600 bg-blue-50" : "text-gray-700 hover:text-blue-600 hover:bg-blue-50")
+            }
             onClick={() => setMobileMenuOpen(false)}
           >
             Shopping List
-          </a>
+          </NavLink>
           <a 
             href="#" 
             className="mobile-menu-item text-gray-700 hover:text-blue-600 block px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 hover:bg-blue-50"

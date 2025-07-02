@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useShoppingList } from '../context/ShoppingListContext';
+import { NavLink } from 'react-router-dom';
 
 const ANIMATION_DURATION = 300; // ms
 
@@ -56,15 +57,26 @@ const ShoppingList = () => {
   return (
     <div className="shopping-list-section">
       <div className="section-header flex flex-col items-start gap-2">
-        <h3 className="section-header flex items-center gap-2">
-          <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
-          </svg>
-          SHOPPING LIST
-          <span className="text-sm font-normal text-gray-300 ml-2">
-            ({shoppingList.length})
-          </span>
-        </h3>
+        <div className="flex items-center justify-between w-full">
+          <h3 className="section-header flex items-center gap-2">
+            <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+            </svg>
+            SHOPPING LIST
+            <span className="text-sm font-normal text-gray-300 ml-2">
+              ({shoppingList.length})
+            </span>
+          </h3>
+          <NavLink
+            to="/shopping-list"
+            className="text-white hover:text-green-300 transition-colors duration-200 p-1 rounded"
+            title="View full shopping list"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </NavLink>
+        </div>
         <button
           onClick={clearShoppingList}
           className="clear-all-btn-modern text-red-400 hover:text-red-600 hover:underline transition-colors duration-200 text-sm font-medium px-2 py-0.5 mt-1"

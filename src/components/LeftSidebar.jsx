@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 const LeftSidebar = () => {
   const [activeItem, setActiveItem] = useState('breakfast');
@@ -40,6 +41,16 @@ const LeftSidebar = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
         </svg>
       )
+    },
+    {
+      id: 'shopping-list',
+      name: 'Shopping List',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+        </svg>
+      ),
+      link: '/shopping-list'
     }
   ];
 
@@ -55,24 +66,48 @@ const LeftSidebar = () => {
           <h2 className="text-lg font-semibold text-gray-800 mb-6 px-2">Meal Categories</h2>
           
           <nav className="space-y-2">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveItem(item.id)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
-                  activeItem === item.id
-                    ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm'
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                }`}
-              >
-                <div className={`transition-colors duration-200 ${
-                  activeItem === item.id ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'
-                }`}>
-                  {item.icon}
-                </div>
-                <span className="font-medium">{item.name}</span>
-              </button>
-            ))}
+            {menuItems.map((item) => {
+              if (item.link) {
+                return (
+                  <NavLink
+                    key={item.id}
+                    to={item.link}
+                    className={({ isActive }) =>
+                      `w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
+                        isActive
+                          ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm'
+                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                      }`
+                    }
+                  >
+                    <div className={`transition-colors duration-200 ${
+                      'text-gray-500 group-hover:text-gray-700'
+                    }`}>
+                      {item.icon}
+                    </div>
+                    <span className="font-medium">{item.name}</span>
+                  </NavLink>
+                );
+              }
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveItem(item.id)}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
+                    activeItem === item.id
+                      ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                  }`}
+                >
+                  <div className={`transition-colors duration-200 ${
+                    activeItem === item.id ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'
+                  }`}>
+                    {item.icon}
+                  </div>
+                  <span className="font-medium">{item.name}</span>
+                </button>
+              );
+            })}
           </nav>
         </div>
       </div>
@@ -93,27 +128,52 @@ const LeftSidebar = () => {
           </div>
           
           <nav className="space-y-2">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveItem(item.id);
-                  setMobileOpen(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
-                  activeItem === item.id
-                    ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm'
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                }`}
-              >
-                <div className={`transition-colors duration-200 ${
-                  activeItem === item.id ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'
-                }`}>
-                  {item.icon}
-                </div>
-                <span className="font-medium">{item.name}</span>
-              </button>
-            ))}
+            {menuItems.map((item) => {
+              if (item.link) {
+                return (
+                  <NavLink
+                    key={item.id}
+                    to={item.link}
+                    className={({ isActive }) =>
+                      `w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
+                        isActive
+                          ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm'
+                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                      }`
+                    }
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <div className={`transition-colors duration-200 ${
+                      'text-gray-500 group-hover:text-gray-700'
+                    }`}>
+                      {item.icon}
+                    </div>
+                    <span className="font-medium">{item.name}</span>
+                  </NavLink>
+                );
+              }
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveItem(item.id);
+                    setMobileOpen(false);
+                  }}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group ${
+                    activeItem === item.id
+                      ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                  }`}
+                >
+                  <div className={`transition-colors duration-200 ${
+                    activeItem === item.id ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'
+                  }`}>
+                    {item.icon}
+                  </div>
+                  <span className="font-medium">{item.name}</span>
+                </button>
+              );
+            })}
           </nav>
         </div>
       </div>
