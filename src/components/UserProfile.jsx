@@ -636,8 +636,8 @@ const UserProfile = () => {
       )}
       {/* Photo Crop Modal */}
       {showPhotoModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 relative">
+        <div className="fixed inset-0 glassy-modal-overlay flex items-center justify-center z-50 p-4" onClick={() => setShowPhotoModal(false)}>
+          <div className="glassy-modal max-w-lg w-full p-6 relative" onClick={e => e.stopPropagation()}>
             <h3 className="text-xl font-bold text-gray-900 mb-4">Crop Your Photo</h3>
             <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden mb-4">
               <Cropper
