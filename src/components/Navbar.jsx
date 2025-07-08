@@ -97,12 +97,12 @@ const Navbar = () => {
                 <div className={`dropdown-content absolute right-0 mt-2 w-48 py-1 z-50 transition-all duration-200 ease-in-out ${
                   dropdownOpen ? 'opacity-100 visible transform translate-y-0' : 'opacity-0 invisible transform -translate-y-2'
                 }`}>
-                  <a href="#" className="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all duration-150">
+                  <NavLink to="/weekly-meal-plan" className="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all duration-150">
                     Weekly Meal Plan
-                  </a>
-                  <a href="#" className="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all duration-150">
+                  </NavLink>
+                  <NavLink to="/monthly-meal-plan" className="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all duration-150">
                     Monthly Meal Plan
-                  </a>
+                  </NavLink>
                 </div>
               </div>
 
@@ -217,20 +217,20 @@ const Navbar = () => {
             <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
               dropdownOpen ? 'max-h-32 opacity-100' : 'max-h-0 opacity-0'
             }`}>
-              <a 
-                href="#" 
+              <NavLink 
+                to="/weekly-meal-plan" 
                 className="mobile-dropdown-item block px-6 py-2 text-sm text-gray-600 hover:text-blue-600 transition-all duration-200 hover:bg-blue-50"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Weekly Meal Plan
-              </a>
-              <a 
-                href="#" 
+              </NavLink>
+              <NavLink 
+                to="/monthly-meal-plan" 
                 className="mobile-dropdown-item block px-6 py-2 text-sm text-gray-600 hover:text-blue-600 transition-all duration-200 hover:bg-blue-50"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Monthly Meal Plan
-              </a>
+              </NavLink>
             </div>
           </div>
 

@@ -10,6 +10,8 @@ import ProfilePage from './pages/ProfilePage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import { AuthProvider } from './context/AuthContext'
+import WeeklyMealPlanPage from './pages/WeeklyMealPlanPage.jsx';
+import MonthlyMealPlanPage from './pages/MonthlyMealPlanPage.jsx';
 
 const router = createBrowserRouter([
   {
@@ -49,6 +51,22 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/weekly-meal-plan',
+        element: (
+          <ProtectedRoute>
+            <WeeklyMealPlanPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/monthly-meal-plan',
+        element: (
+          <ProtectedRoute>
+            <MonthlyMealPlanPage />
           </ProtectedRoute>
         ),
       },

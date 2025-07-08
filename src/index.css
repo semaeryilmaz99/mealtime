@@ -611,9 +611,14 @@
   }
 }
 
+@keyframes bounce-on-hover-key {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
 .bounce-on-hover:hover {
-  animation: bounce-subtle 0.6s ease-out;
-  box-shadow: 0 10px 20px rgba(30, 64, 175, 0.25), 0 6px 6px rgba(30, 64, 175, 0.2);
+  animation: bounce-on-hover-key 0.4s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 8px 24px 0 rgba(60, 80, 255, 0.18), 0 2px 8px 0 rgba(0,0,0,0.07);
+  z-index: 2;
 }
 
 .bouncing-container {
