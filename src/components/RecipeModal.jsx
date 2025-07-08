@@ -283,11 +283,11 @@ const RecipeModal = ({ recipe, isOpen, onClose }) => {
     <div className="fixed inset-0 z-40 md:z-50 flex items-center justify-center p-2 md:top-16 md:left-64 md:right-80 md:bottom-0 md:p-4">
       {/* Glassmorphism overlay */}
       <div 
-        className="absolute inset-0 bg-white/30 backdrop-blur-xl"
+        className="absolute inset-0 glassy-modal-overlay"
         onClick={onClose}
       ></div>
       {/* Modal content */}
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[85vh] md:max-h-[calc(100vh-8rem)] overflow-hidden z-40 md:z-50">
+      <div className="relative glassy-modal max-w-4xl w-full max-h-[85vh] md:max-h-[calc(100vh-8rem)] overflow-hidden z-40 md:z-50" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="relative h-64 md:h-80">
           <img 

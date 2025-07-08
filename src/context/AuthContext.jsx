@@ -8,6 +8,7 @@ import {
   signInWithPopup
 } from 'firebase/auth';
 import { auth } from '../lib/firebase.js';
+import { userProfileServices } from '../lib/firebaseServices';
 
 const AuthContext = createContext();
 
@@ -46,8 +47,18 @@ export const AuthProvider = ({ children }) => {
 
   // Listen for auth state changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Fetch Firestore profile for username
+        try {
+          const profile = await userProfileServices.getUserProfile();
+          setCurrentUser({ ...user, displayName: profile.displayName });
+        } catch {
+          setCurrentUser(user);
+        }
+      } else {
+        setCurrentUser(null);
+      }
       setLoading(false);
     });
 

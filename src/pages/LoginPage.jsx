@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import { userProfileServices } from '../lib/firebaseServices';
+import { updateProfile } from 'firebase/auth';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [username, setUsername] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,17 +22,26 @@ const LoginPage = () => {
     if (isSignUp && password !== confirmPassword) {
       return setError('Passwords do not match');
     }
+    if (isSignUp && !username.trim()) {
+      return setError('Username is required');
+    }
 
     try {
       setError('');
       setLoading(true);
-      
+      let userCredential;
       if (isSignUp) {
-        await signup(email, password);
+        userCredential = await signup(email, password);
+        // Update Auth displayName
+        await updateProfile(userCredential.user, { displayName: username });
+        // Save username to Firestore
+        await userProfileServices.updateUserProfile({
+          displayName: username,
+          email: email
+        });
       } else {
         await login(email, password);
       }
-      
       navigate('/');
     } catch (error) {
       // Show friendly message for wrong password or invalid credentials
@@ -88,6 +100,24 @@ const LoginPage = () => {
           )}
           
           <div className="space-y-4">
+            {isSignUp && (
+              <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                  Username
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="Choose a username"
+                />
+              </div>
+            )}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address

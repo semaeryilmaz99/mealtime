@@ -113,9 +113,9 @@ const Navbar = () => {
                      onMouseLeave={() => setUserDropdownOpen(false)}>
                   <button className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                     <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                      {currentUser.email ? currentUser.email[0].toUpperCase() : 'U'}
+                      {(currentUser.displayName)?.[0]?.toUpperCase() || (currentUser.email?.[0]?.toUpperCase()) || 'U'}
                     </div>
-                    <span className="hidden lg:block">{currentUser.email}</span>
+                    <span className="hidden lg:block">{currentUser.displayName || currentUser.email}</span>
                     <svg className="ml-1 h-4 w-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
@@ -239,9 +239,9 @@ const Navbar = () => {
             <div className="mobile-menu-item">
               <div className="flex items-center space-x-3 px-3 py-3">
                 <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                  {currentUser.email ? currentUser.email[0].toUpperCase() : 'U'}
+                  {(currentUser.displayName)?.[0]?.toUpperCase() || (currentUser.email?.[0]?.toUpperCase()) || 'U'}
                 </div>
-                <span className="text-gray-700 text-base font-medium">{currentUser.email}</span>
+                <span className="text-gray-700 text-base font-medium">{currentUser.displayName || currentUser.email}</span>
               </div>
               <NavLink
                 to="/profile"

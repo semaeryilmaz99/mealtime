@@ -491,7 +491,7 @@ const UserProfile = () => {
                     <label key={pref} className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={profileData.dietaryPreferences.includes(pref)}
+                        checked={(profileData.dietaryPreferences || []).includes(pref)}
                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">{pref}</span>
@@ -543,8 +543,8 @@ const UserProfile = () => {
 
       {/* Password Change Modal */}
       {showPasswordModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+        <div className="fixed inset-0 glassy-modal-overlay flex items-center justify-center z-50 p-4" onClick={closePasswordModal}>
+          <div className="glassy-modal max-w-md w-full p-6 relative" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-gray-900">Change Password</h3>
               <button
