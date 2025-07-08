@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from 'react';
+import { shoppingListServices } from '../lib/firebaseServices';
+import { useAuth } from './AuthContext';
 
 const ShoppingListContext = createContext();
 
@@ -12,78 +14,139 @@ export const useShoppingList = () => {
 
 export const ShoppingListProvider = ({ children }) => {
   const [shoppingList, setShoppingList] = useState([]);
-  // Store timers for auto-removal
+  const [loading, setLoading] = useState(false);
+  const { currentUser } = useAuth();
   const removalTimers = useRef({});
 
-  const addToShoppingList = (ingredient) => {
-    setShoppingList(prev => {
-      const exists = prev.find(item => item.name === ingredient.name && item.recipe === ingredient.recipe);
-      if (exists) {
-        return prev;
-      }
-      return [...prev, { ...ingredient, id: Date.now() + Math.random() }];
-    });
-  };
+  // Load shopping list from Firebase when user logs in
+  useEffect(() => {
+    if (currentUser) {
+      loadShoppingList();
+    } else {
+      setShoppingList([]);
+    }
+  }, [currentUser]);
 
-  const removeFromShoppingList = (ingredientId) => {
-    setShoppingList(prev => prev.filter(item => item.id !== ingredientId));
-    // Clear any pending timer
-    if (removalTimers.current[ingredientId]) {
-      clearTimeout(removalTimers.current[ingredientId]);
-      delete removalTimers.current[ingredientId];
+  const loadShoppingList = async () => {
+    console.log('loadShoppingList called, currentUser:', currentUser);
+    if (!currentUser) return;
+    setLoading(true);
+    try {
+      const items = await shoppingListServices.getAllShoppingItems();
+      console.log('Loaded shopping list items:', items);
+      setShoppingList(items);
+    } catch (error) {
+      console.error('Error loading shopping list:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const clearShoppingList = () => {
-    setShoppingList([]);
-    // Clear all timers
-    Object.values(removalTimers.current).forEach(timer => clearTimeout(timer));
-    removalTimers.current = {};
+  const addToShoppingList = async (ingredient) => {
+    if (!currentUser) return;
+    setLoading(true);
+    try {
+      console.log('Adding to shopping list:', ingredient);
+      // Prevent duplicates
+      const exists = shoppingList.find(item => item.name === ingredient.name && item.recipe === ingredient.recipe);
+      if (exists) return;
+      const newItem = await shoppingListServices.addShoppingItem({
+        name: ingredient.name,
+        recipe: ingredient.recipe,
+        checked: false
+      });
+      setShoppingList(prev => [...prev, newItem]);
+    } catch (error) {
+      console.error('Error adding to shopping list:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const toggleIngredientChecked = (ingredientId) => {
-    setShoppingList(prev => {
-      return prev.map(item => {
+  const removeFromShoppingList = async (ingredientId) => {
+    if (!currentUser) return;
+    setLoading(true);
+    try {
+      await shoppingListServices.deleteShoppingItem(ingredientId);
+      setShoppingList(prev => prev.filter(item => item.id !== ingredientId));
+      if (removalTimers.current[ingredientId]) {
+        clearTimeout(removalTimers.current[ingredientId]);
+        delete removalTimers.current[ingredientId];
+      }
+    } catch (error) {
+      console.error('Error removing from shopping list:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearShoppingList = async () => {
+    if (!currentUser) return;
+    setLoading(true);
+    try {
+      const deletePromises = shoppingList.map(item => shoppingListServices.deleteShoppingItem(item.id));
+      await Promise.all(deletePromises);
+      setShoppingList([]);
+      Object.values(removalTimers.current).forEach(timer => clearTimeout(timer));
+      removalTimers.current = {};
+    } catch (error) {
+      console.error('Error clearing shopping list:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleIngredientChecked = async (ingredientId) => {
+    if (!currentUser) return;
+    setLoading(true);
+    try {
+      const item = shoppingList.find(item => item.id === ingredientId);
+      if (!item) return;
+      const newChecked = !item.checked;
+      await shoppingListServices.updateShoppingItem(ingredientId, { completed: newChecked });
+      setShoppingList(prev => prev.map(item => {
         if (item.id === ingredientId) {
-          const newChecked = !item.checked;
-          // If marking as bought, start timer
           if (newChecked) {
-            // Clear any existing timer first
             if (removalTimers.current[ingredientId]) {
               clearTimeout(removalTimers.current[ingredientId]);
             }
-            removalTimers.current[ingredientId] = setTimeout(() => {
-              setShoppingList(current => current.filter(i => i.id !== ingredientId));
+            removalTimers.current[ingredientId] = setTimeout(async () => {
+              await removeFromShoppingList(ingredientId);
               delete removalTimers.current[ingredientId];
             }, 3000);
           } else {
-            // If unchecking, clear timer
             if (removalTimers.current[ingredientId]) {
               clearTimeout(removalTimers.current[ingredientId]);
               delete removalTimers.current[ingredientId];
             }
           }
-          return { ...item, checked: newChecked };
+          return { ...item, checked: newChecked, completed: newChecked };
         }
         return item;
-      });
-    });
+      }));
+    } catch (error) {
+      console.error('Error toggling ingredient:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Clean up timers on unmount
   useEffect(() => {
     return () => {
       Object.values(removalTimers.current).forEach(timer => clearTimeout(timer));
     };
   }, []);
 
+  console.log('Current user in ShoppingListProvider:', currentUser);
+
   return (
-    <ShoppingListContext.Provider value={{ 
-      shoppingList, 
-      addToShoppingList, 
-      removeFromShoppingList, 
+    <ShoppingListContext.Provider value={{
+      shoppingList,
+      addToShoppingList,
+      removeFromShoppingList,
       clearShoppingList,
-      toggleIngredientChecked
+      toggleIngredientChecked,
+      loading
     }}>
       {children}
     </ShoppingListContext.Provider>

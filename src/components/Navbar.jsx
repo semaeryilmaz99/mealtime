@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
 
   // Close mobile menu when clicking outside
   useEffect(() => {
@@ -91,6 +105,39 @@ const Navbar = () => {
                   </a>
                 </div>
               </div>
+
+              {/* User Menu */}
+              {currentUser ? (
+                <div className="relative"
+                     onMouseEnter={() => setUserDropdownOpen(true)}
+                     onMouseLeave={() => setUserDropdownOpen(false)}>
+                  <button className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                    <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                      {currentUser.email ? currentUser.email[0].toUpperCase() : 'U'}
+                    </div>
+                    <span className="hidden lg:block">{currentUser.email}</span>
+                    <svg className="ml-1 h-4 w-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  
+                  {/* User Dropdown Content */}
+                  <div className={`absolute right-0 mt-2 w-48 py-1 z-50 transition-all duration-200 ease-in-out ${
+                    userDropdownOpen ? 'opacity-100 visible transform translate-y-0' : 'opacity-0 invisible transform -translate-y-2'
+                  }`}>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-150"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <NavLink to="/login" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                  Sign In
+                </NavLink>
+              )}
             </div>
           </div>
 
@@ -179,6 +226,35 @@ const Navbar = () => {
               </a>
             </div>
           </div>
+
+          {/* Mobile User Menu */}
+          {currentUser ? (
+            <div className="mobile-menu-item">
+              <div className="flex items-center space-x-3 px-3 py-3">
+                <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                  {currentUser.email ? currentUser.email[0].toUpperCase() : 'U'}
+                </div>
+                <span className="text-gray-700 text-base font-medium">{currentUser.email}</span>
+              </div>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setMobileMenuOpen(false);
+                }}
+                className="mobile-menu-item text-red-600 hover:text-red-700 block w-full text-left px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 hover:bg-red-50"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <NavLink
+              to="/login"
+              className="mobile-menu-item text-gray-700 hover:text-blue-600 block px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 hover:bg-blue-50"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Sign In
+            </NavLink>
+          )}
         </div>
       </div>
     </nav>
