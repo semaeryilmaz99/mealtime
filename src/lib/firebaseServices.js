@@ -13,6 +13,9 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase.js";
 import { auth } from "./firebase.js";
+import { storage } from './firebase.js';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 // Recipe services
 export const recipeServices = {
@@ -221,6 +224,25 @@ export const userProfileServices = {
       return { id: user.uid, ...updateData };
     } catch (error) {
       console.error("Error updating user profile: ", error);
+      throw error;
+    }
+  },
+
+  async uploadProfilePhoto(file) {
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error('User not authenticated');
+      const ext = file.name.split('.').pop();
+      const fileName = `profile_photos/${user.uid}/${uuidv4()}.${ext}`;
+      const storageRef = ref(storage, fileName);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      // Update Firestore profile
+      const docRef = doc(db, 'userProfiles', user.uid);
+      await updateDoc(docRef, { photoURL: url, updatedAt: new Date() });
+      return url;
+    } catch (error) {
+      console.error('Error uploading profile photo:', error);
       throw error;
     }
   }

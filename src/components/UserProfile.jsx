@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import Cropper from 'react-easy-crop';
 import { userProfileServices } from '../lib/firebaseServices';
+import { getCroppedImg } from '../lib/cropImageUtils';
 import { updatePassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { uploadBytesResumable, ref as storageRef, getDownloadURL } from 'firebase/storage';
+import { storage } from '../lib/firebase';
 
 const UserProfile = () => {
   const { currentUser } = useAuth();
@@ -27,8 +31,17 @@ const UserProfile = () => {
     dietaryPreferences: [],
     cookingLevel: '',
     favoriteCuisine: '',
-    joinDate: ''
+    joinDate: '',
+    photoURL: '' // Added photoURL to profileData
   });
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [photoFile, setPhotoFile] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [photoLoading, setPhotoLoading] = useState(false);
+  const [photoError, setPhotoError] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // Load profile data from Firebase
   useEffect(() => {
@@ -48,7 +61,8 @@ const UserProfile = () => {
           dietaryPreferences: ['Vegetarian', 'Gluten-Free'],
           cookingLevel: 'Intermediate',
           favoriteCuisine: 'Italian',
-          joinDate: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+          joinDate: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+          photoURL: currentUser?.photoURL || '' // Set default photoURL
         });
       } finally {
         setLoading(false);
@@ -152,6 +166,68 @@ const UserProfile = () => {
     });
   };
 
+  // Handle photo selection
+  const handlePhotoSelect = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.size > 5 * 1024 * 1024) { // 5MB
+        setPhotoError('File size must be 5MB or less.');
+        setPhotoFile(null);
+        setShowPhotoModal(false);
+        return;
+      }
+      setPhotoFile(file);
+      setShowPhotoModal(true);
+      setPhotoError('');
+    }
+  };
+
+  // Handle crop complete
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  };
+
+  // Handle photo upload with progress
+  const handlePhotoUpload = async () => {
+    setPhotoLoading(true);
+    setPhotoError('');
+    setUploadProgress(0);
+    try {
+      const croppedBlob = await getCroppedImg(
+        URL.createObjectURL(photoFile),
+        croppedAreaPixels
+      );
+      const croppedFile = new File([croppedBlob], photoFile.name, { type: photoFile.type });
+      // Firebase upload with progress
+      const user = currentUser;
+      const ext = croppedFile.name.split('.').pop();
+      const fileName = `profile_photos/${user.uid}/${Date.now()}.${ext}`;
+      const refToStorage = storageRef(storage, fileName);
+      const uploadTask = uploadBytesResumable(refToStorage, croppedFile);
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          setUploadProgress(progress);
+        },
+        (error) => {
+          setPhotoError('Failed to upload photo. Please try again.');
+          setPhotoLoading(false);
+        },
+        async () => {
+          const url = await getDownloadURL(uploadTask.snapshot.ref);
+          await userProfileServices.updateUserProfile({ ...profileData, photoURL: url });
+          setProfileData((prev) => ({ ...prev, photoURL: url }));
+          setShowPhotoModal(false);
+          setPhotoFile(null);
+          setPhotoLoading(false);
+        }
+      );
+    } catch (error) {
+      setPhotoError('Failed to upload photo. Please try again.');
+      setPhotoLoading(false);
+    }
+  };
+
   const tabs = [
     { id: 'profile', label: 'Profile', icon: '👤' },
     { id: 'preferences', label: 'Preferences', icon: '⚙️' },
@@ -199,14 +275,23 @@ const UserProfile = () => {
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             {/* Profile Avatar */}
             <div className="relative">
-              <div className="w-24 h-24 md:w-32 md:h-32 bg-white/20 rounded-full flex items-center justify-center text-4xl md:text-5xl font-bold backdrop-blur-sm border-4 border-white/30">
-                {currentUser?.displayName?.[0]?.toUpperCase() || currentUser?.email?.[0]?.toUpperCase() || 'U'}
-              </div>
-              <button className="absolute -bottom-2 -right-2 bg-white text-blue-600 p-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110">
+              {profileData.photoURL ? (
+                <img
+                  src={profileData.photoURL}
+                  alt="Profile"
+                  className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-white/30 shadow-lg"
+                />
+              ) : (
+                <div className="w-24 h-24 md:w-32 md:h-32 bg-white/20 rounded-full flex items-center justify-center text-4xl md:text-5xl font-bold backdrop-blur-sm border-4 border-white/30">
+                  {currentUser?.displayName?.[0]?.toUpperCase() || currentUser?.email?.[0]?.toUpperCase() || 'U'}
+                </div>
+              )}
+              <label className="absolute -bottom-2 -right-2 bg-white text-blue-600 p-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 cursor-pointer">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                 </svg>
-              </button>
+                <input type="file" accept="image/*" className="hidden" onChange={handlePhotoSelect} />
+              </label>
             </div>
             
             {/* Profile Info */}
@@ -546,6 +631,72 @@ const UserProfile = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Photo Crop Modal */}
+      {showPhotoModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 relative">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Crop Your Photo</h3>
+            <div className="relative w-full h-64 bg-gray-100 rounded-lg overflow-hidden mb-4">
+              <Cropper
+                image={photoFile ? URL.createObjectURL(photoFile) : null}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+              />
+            </div>
+            <div className="flex gap-3 items-center mb-4">
+              <label className="text-sm text-gray-700">Zoom</label>
+              <input
+                type="range"
+                min={1}
+                max={3}
+                step={0.01}
+                value={zoom}
+                onChange={(e) => setZoom(Number(e.target.value))}
+                className="flex-1"
+              />
+            </div>
+            {photoError && <div className="text-red-600 text-sm mb-2">{photoError}</div>}
+            {photoLoading && (
+              <div className="w-full bg-gray-200 rounded-full h-3 mb-2 overflow-hidden">
+                <div
+                  className="bg-blue-500 h-3 rounded-full transition-all duration-200"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+            )}
+            {photoLoading && (
+              <div className="text-sm text-gray-600 mb-2">Uploading: {uploadProgress}%</div>
+            )}
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowPhotoModal(false)}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors duration-200"
+                disabled={photoLoading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handlePhotoUpload}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={photoLoading}
+              >
+                {photoLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Uploading...
+                  </>
+                ) : (
+                  'Save Photo'
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
