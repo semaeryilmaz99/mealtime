@@ -74,9 +74,36 @@ const sampleMeals = {
 // Placeholder recipe options for demo
 const recipeOptionsMap = {
   Smoothie: [
-    { title: 'Berry Blast Smoothie', description: 'Blueberries, strawberries, banana, and yogurt.', photo: 'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=400&q=80' },
-    { title: 'Green Detox Smoothie', description: 'Spinach, apple, banana, and almond milk.', photo: 'https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=400&q=80' },
-    { title: 'Tropical Mango Smoothie', description: 'Mango, pineapple, coconut water.', photo: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80' },
+    { 
+      title: 'Berry Blast Smoothie', 
+      description: 'Blueberries, strawberries, banana, and yogurt.', 
+      photo: 'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=400&q=80',
+      steps: [
+        'Add blueberries, strawberries, banana, and yogurt to a blender.',
+        'Blend until smooth.',
+        'Pour into a glass and enjoy!'
+      ]
+    },
+    { 
+      title: 'Green Detox Smoothie', 
+      description: 'Spinach, apple, banana, and almond milk.', 
+      photo: 'https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=400&q=80',
+      steps: [
+        'Add spinach, apple, banana, and almond milk to a blender.',
+        'Blend until smooth and creamy.',
+        'Serve immediately.'
+      ]
+    },
+    { 
+      title: 'Tropical Mango Smoothie', 
+      description: 'Mango, pineapple, coconut water.', 
+      photo: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
+      steps: [
+        'Combine mango, pineapple, and coconut water in a blender.',
+        'Blend until smooth.',
+        'Pour into a glass and enjoy your tropical treat!'
+      ]
+    },
   ],
   Oatmeal: [
     { title: 'Classic Oatmeal', description: 'Oats, milk, honey, and cinnamon.', photo: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80' },
