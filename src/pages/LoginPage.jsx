@@ -32,7 +32,17 @@ const LoginPage = () => {
       
       navigate('/');
     } catch (error) {
-      setError(error.message);
+      // Show friendly message for wrong password or invalid credentials
+      if (
+        error.code === 'auth/wrong-password' ||
+        error.code === 'auth/invalid-credential' ||
+        error.message?.toLowerCase().includes('invalid-credential') ||
+        error.message?.toLowerCase().includes('wrong-password')
+      ) {
+        setError('The email or password you entered is incorrect.');
+      } else {
+        setError(error.message);
+      }
     } finally {
       setLoading(false);
     }
