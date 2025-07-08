@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useShoppingList } from '../context/ShoppingListContext';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import PriceComparisonTable from './PriceComparisonTable';
 
 const ANIMATION_DURATION = 300; // ms
 
-const ShoppingList = () => {
+const ShoppingList = ({ isSidebar = false }) => {
   const { 
     shoppingList, 
     removeFromShoppingList, 
@@ -13,6 +14,7 @@ const ShoppingList = () => {
   } = useShoppingList();
 
   const [removingIds, setRemovingIds] = useState([]);
+  const navigate = useNavigate();
 
   // Listen for external removals (e.g., auto-remove after bought)
   useEffect(() => {
@@ -148,6 +150,24 @@ const ShoppingList = () => {
               ))}
             </div>
           </div>
+        )}
+
+        {/* Price Comparison Table or Button */}
+        {uncheckedItems.length > 0 && (
+          isSidebar ? (
+            <div className="mt-4 flex justify-center">
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors duration-200 text-sm font-semibold"
+                onClick={() => navigate('/shopping-list')}
+              >
+                Compare Prices
+              </button>
+            </div>
+          ) : (
+            <div className="mt-4">
+              <PriceComparisonTable ingredients={uncheckedItems} />
+            </div>
+          )
         )}
       </div>
     </div>

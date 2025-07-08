@@ -27,7 +27,7 @@ const RightSidebar = () => {
         <div className="sidebar-content">
           {/* Shopping List Section */}
           <div className="mb-8">
-            <ShoppingList />
+            <ShoppingList isSidebar={true} />
           </div>
           
           <div className="dietary-section">
@@ -67,7 +67,7 @@ const RightSidebar = () => {
         <div className="sidebar-content">
           {/* Shopping List Section */}
           <div className="mb-8">
-            <ShoppingList />
+            <ShoppingList isSidebar={true} />
           </div>
           
           <div className="dietary-section">

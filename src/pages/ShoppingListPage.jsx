@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useShoppingList } from '../context/ShoppingListContext';
+import PriceComparisonTable from '../components/PriceComparisonTable';
 
 const ANIMATION_DURATION = 300; // ms
 
@@ -222,6 +223,11 @@ const ShoppingListPage = () => {
                 </div>
               </div>
             </div>
+          )}
+
+          {/* Price Comparison Table */}
+          {uncheckedItems.length > 0 && (
+            <PriceComparisonTable ingredients={uncheckedItems} />
           )}
         </div>
       )}
