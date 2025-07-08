@@ -125,6 +125,13 @@ const Navbar = () => {
                   <div className={`absolute right-0 mt-2 w-48 py-1 z-50 transition-all duration-200 ease-in-out ${
                     userDropdownOpen ? 'opacity-100 visible transform translate-y-0' : 'opacity-0 invisible transform -translate-y-2'
                   }`}>
+                    <NavLink
+                      to="/profile"
+                      className="w-full text-left dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all duration-150"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      Profile
+                    </NavLink>
                     <button
                       onClick={handleLogout}
                       className="w-full text-left dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-150"
@@ -236,6 +243,13 @@ const Navbar = () => {
                 </div>
                 <span className="text-gray-700 text-base font-medium">{currentUser.email}</span>
               </div>
+              <NavLink
+                to="/profile"
+                className="mobile-menu-item text-gray-700 hover:text-blue-600 block w-full text-left px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 hover:bg-blue-50"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Profile
+              </NavLink>
               <button
                 onClick={() => {
                   handleLogout();

@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
 import RecipesPage from './pages/RecipesPage.jsx'
 import ShoppingListPage from './pages/ShoppingListPage.jsx'
+import ProfilePage from './pages/ProfilePage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import { AuthProvider } from './context/AuthContext'
@@ -40,6 +41,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <ShoppingListPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/profile',
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         ),
       },

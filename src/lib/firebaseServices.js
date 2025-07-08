@@ -6,6 +6,7 @@ import {
   doc, 
   updateDoc, 
   deleteDoc, 
+  setDoc,
   query, 
   where, 
   orderBy
@@ -150,6 +151,76 @@ export const recipeServices = {
       }));
     } catch (error) {
       console.error("Error getting recipes by category: ", error);
+      throw error;
+    }
+    }
+};
+
+// User profile services
+export const userProfileServices = {
+  // Get user profile
+  async getUserProfile() {
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("User not authenticated");
+      
+      const docRef = doc(db, "userProfiles", user.uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+      } else {
+        // Return default profile if none exists
+        return {
+          id: user.uid,
+          displayName: user.displayName || '',
+          email: user.email || '',
+          bio: 'Food enthusiast and home chef who loves experimenting with new recipes.',
+          location: 'New York, NY',
+          dietaryPreferences: ['Vegetarian', 'Gluten-Free'],
+          cookingLevel: 'Intermediate',
+          favoriteCuisine: 'Italian',
+          joinDate: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+      }
+    } catch (error) {
+      console.error("Error getting user profile: ", error);
+      throw error;
+    }
+  },
+
+  // Create or update user profile
+  async updateUserProfile(profileData) {
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("User not authenticated");
+      
+      const docRef = doc(db, "userProfiles", user.uid);
+      const docSnap = await getDoc(docRef);
+      
+      const updateData = {
+        ...profileData,
+        userId: user.uid,
+        userEmail: user.email,
+        updatedAt: new Date()
+      };
+      
+      if (docSnap.exists()) {
+        // Update existing profile
+        await updateDoc(docRef, updateData);
+      } else {
+        // Create new profile
+        await setDoc(docRef, {
+          ...updateData,
+          createdAt: new Date()
+        });
+      }
+      
+      return { id: user.uid, ...updateData };
+    } catch (error) {
+      console.error("Error updating user profile: ", error);
       throw error;
     }
   }
